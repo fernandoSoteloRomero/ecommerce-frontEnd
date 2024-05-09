@@ -1,0 +1,40 @@
+<div
+  class="flex flex-column h-screen align-content-center flex-wrap justify-content-center"
+>
+  <div class="surface-400 p-4 shadow-2 border-round w-full md:w-7 lg:5 xl:w-4">
+    <div class="text-center mb-5">Ingrese su usuario y contraseña</div>
+
+    <div class="grid">
+      <div class="col-12 md:col-6 md:my-3">
+        <p-floatLabel>
+          <input
+            pInputText
+            id="username"
+            [(ngModel)]="value"
+            aria-describedby="usuario-helper"
+            class="w-full"
+          />
+          <label for="username">Usuario</label>
+        </p-floatLabel>
+        <small id="usuario-helper"> Ingrese su usuario </small>
+      </div>
+
+      <div class="col-12 md:col-6 md:my-3">
+        <p-floatLabel>
+          <input
+            pInputText
+            id="username"
+            [(ngModel)]="value"
+            aria-describedby="password-helper"
+            class="w-full"
+          />
+          <label for="username">contraseña</label>
+        </p-floatLabel>
+        <small id="password-helper"> Ingrese su contraseña </small>
+      </div>
+    </div>
+    <div class="flex align-content-center justify-content-center flex-wrap my-2">
+      <button pButton pRipple label="Iniciar sesión" icon="pi pi-user" class="w-full"></button>
+    </div>
+  </div>
+</div>
