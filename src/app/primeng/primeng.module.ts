@@ -4,6 +4,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+
 
 @NgModule({
   declarations: [],
@@ -14,7 +16,8 @@ import { ButtonModule } from 'primeng/button';
     CheckboxModule,
     InputTextModule,
     FloatLabelModule,
-    ButtonModule
+    ButtonModule,
+    ToastModule
   ]
 })
 export class PrimengModule { }
