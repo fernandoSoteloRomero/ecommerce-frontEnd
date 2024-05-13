@@ -13,11 +13,14 @@
               id="username"
               aria-describedby="usuario-helper"
               class="w-full"
+              [ngClass]="{' ng-dirty': isValidField('username')}"
               formControlName="username"
             />
             <label for="username">Usuario</label>
           </p-floatLabel>
-          <small id="usuario-helper"> Ingrese su usuario </small>
+          <small class="text-red-700" *ngIf="isValidField('username')">
+            Este campo es requerido
+          </small>
         </div>
 
         <div class="col-12 md:col-6 md:my-3">
@@ -28,11 +31,14 @@
               id="password"
               aria-describedby="password-helper"
               class="w-full"
+              [ngClass]="{' ng-dirty': isValidField('password')}"
               formControlName="password"
             />
             <label for="username">contraseña</label>
           </p-floatLabel>
-          <small id="password-helper"> Ingrese su contraseña </small>
+          <small class="text-red-700" *ngIf="isValidField('password')">
+            Este campo es requerido
+          </small>
         </div>
       </div>
       <div

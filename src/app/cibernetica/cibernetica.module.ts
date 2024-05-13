@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomePageComponent } from './pages/home-page/home-page.component';
 
+import { CiberneticaRoutingModule } from './cibernetica-routing.module';
+import { HomePageComponent } from './pages/home-page/home-page.component';
 
 
 @NgModule({
@@ -9,7 +10,8 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
     HomePageComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    CiberneticaRoutingModule
   ]
 })
 export class CiberneticaModule { }
