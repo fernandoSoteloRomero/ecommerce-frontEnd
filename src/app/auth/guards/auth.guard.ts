@@ -1,13 +1,28 @@
-import { inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { AuthService } from "../services/auth.service";
+import { Observable, from, map } from "rxjs";
 
-export const authGuard = () => {
-  const router = inject(Router);
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+  constructor(private auth:AuthService,private router:Router){}
 
-  if (!localStorage.getItem('token')) {
-    return true;
-  } else {
-    router.navigateByUrl('/cibernetica');
-    return false;
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+      return from(this.auth.isLoggedIn()).pipe(
+        map(isLoggedIn => {
+          if (!isLoggedIn) {
+            console.log(isLoggedIn, 'AuthGuard');
+            this.router.navigate(['/cibernetica/inicio']);
+            return false;
+          } else {
+            return true; 
+          }
+        })
+      )
   }
-};
+  
+}

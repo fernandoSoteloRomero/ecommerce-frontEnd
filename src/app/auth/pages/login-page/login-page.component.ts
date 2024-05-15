@@ -44,16 +44,13 @@ export class LoginPageComponent {
       return;
     }
 
-    this.authService.login(this.myForm.value).subscribe(
+    this.authService.iniciarSesion(this.myForm.value).subscribe(
       (user) => {
         // Manejar la respuesta del backend aquí
-        console.log(user);
         this.showMessageLeft(user);
         // Retrasar la navegación por 2 segundos (2000 milisegundos)
         setTimeout(() => {
-          if (user) {
-            this.router.navigateByUrl('/cibernetica');
-          }
+          this.router.navigateByUrl('/cibernetica');
         }, 1000);
       },
       (error) => {
@@ -63,7 +60,7 @@ export class LoginPageComponent {
     );
   }
 
-  showMessageLeft(user: User): void {
+  showMessageLeft(user: any): void {
     this.messageService.add({
       severity: 'success',
       summary: 'Inicio de sesión',

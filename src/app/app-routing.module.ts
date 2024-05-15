@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Error404PageComponent } from './shared/pages/error404-page/error404-page.component';
-import { loginGuard } from './auth/guards/public.guard';
-import { authGuard } from './auth/guards/auth.guard';
+import { LoginGuard } from './auth/guards/login.guard';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
-    canActivate: [authGuard]
+    canActivate:[LoginGuard]
   },
   {
     path: 'cibernetica',
@@ -16,10 +16,10 @@ const routes: Routes = [
       import('./cibernetica/cibernetica.module').then(
         (m) => m.CiberneticaModule
       ),
-    canActivate: [loginGuard],
+      canActivate: [AuthGuard]
   },
   { path: '404', component: Error404PageComponent },
-  { path: '**', redirectTo: '404' },
+  { path: '**', redirectTo: 'auth' },
 ];
 
 @NgModule({
