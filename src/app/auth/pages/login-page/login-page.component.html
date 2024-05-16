@@ -1,6 +1,11 @@
 <div
   class="flex flex-column h-screen align-content-center flex-wrap justify-content-center"
 >
+  <p-messages
+    *ngIf="showMessage"
+    [(value)]="messages"
+    
+  />
   <div class="surface-400 p-4 shadow-2 border-round w-full md:w-7 lg:5 xl:w-4">
     <form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSubmit()" >
       <div class="text-center mb-5">Ingrese su usuario y contraseña</div>

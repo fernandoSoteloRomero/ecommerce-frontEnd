@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { MessagesModule } from 'primeng/messages';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { ToastModule } from 'primeng/toast';
     InputTextModule,
     FloatLabelModule,
     ButtonModule,
+    MessagesModule,
     ToastModule
   ]
 })

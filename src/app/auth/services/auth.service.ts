@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, from, map, tap } from 'rxjs';
+import { BehaviorSubject, catchError, from, map, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
@@ -8,6 +8,7 @@ export class AuthService {
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
+  showMessage: boolean = false;
   loggedUser: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private accessToken: any;
   private refreshToken: any;
@@ -28,30 +29,27 @@ export class AuthService {
     }
   }
 
-  public iniciarSesion(form: any) {
-    return this.http.post<any>(` http://127.0.0.1:8000/login/ `, form).pipe(
-      map((response) => {
-        const storeAccess = localStorage.setItem(
-          'ACCESS_TOKEN_KEY',
-          response.token
-        );
-        const storeRefresh = localStorage.setItem(
-          'REFRESH_TOKEN_KEY',
-          response.refresh_token
-        );
+  private storeTokens(accessToken: string, refreshToken: string): void {
+    localStorage.setItem('ACCESS_TOKEN_KEY', accessToken);
+    localStorage.setItem('REFRESH_TOKEN_KEY', refreshToken);
+  }
 
+  iniciarSesion(form: any) {
+    return this.http.post<any>('http://127.0.0.1:8000/login/', form).pipe(
+      map(response => {
+        this.storeTokens(response.token, response.refresh_token);
         this.loadData();
-
-        return from(Promise.all([storeAccess, storeRefresh]));
+        return response;
       }),
-      tap((_) => {
-        this.isAuthenticated.next(true);
+      tap(() => this.isAuthenticated.next(true)),
+      catchError(error => {
+        console.error('Login failed', error);
+        throw error;
       })
     );
   }
 
   public getRefreshToken() {
-		// return Preferences.get({key: "REFRESH_TOKEN_KEY"});
 		return localStorage.getItem('REFRESH_TOKEN_KEY');
 	}
 
@@ -63,37 +61,42 @@ export class AuthService {
 		const token = await this.getRefreshToken();
 		return !!token;
 	}
+
+  getShowMessage(): boolean{
+    return this.showMessage;
+  }
+
+  checkRefreshToken(refreshToken: string){
+    this.showMessage = true;
+    return this.http.post<any>(`http://127.0.0.1:8000/api/token/refresh/`, {
+      'refresh': refreshToken,
+    })
+
+  }
+
 }
-// import { HttpClient, HttpHeaders } from '@angular/common/http';
-// import { User, UserClass } from '../interfaces/User.interface';
-// import { Observable, catchError, map, of, tap } from 'rxjs';
-
-// constructor(private http: HttpClient) {}
-// private user?: User;
-
-// login(user: any): Observable<User> {
-//   const httpOptions = {
-//     headers: new HttpHeaders({
-//       'Content-Type': 'application/json',
-//     }),
-//   };
-//   return this.http
-//     .post<User>(
-//       `http://127.0.0.1:8000/login/`,
-//       JSON.stringify(user),
-//       httpOptions
-//     )
-//     .pipe(
-//       tap((user) => (this.user = user)),
-//       tap((user) => {
-//         localStorage.setItem('token', user.token.toString());
-//         localStorage.setItem('user', JSON.stringify(user.user));
 
 
-// get currentUser(): User | undefined {
-//   if (!this.user) return undefined;
 
-//     // Crea una copia profunda
-//     return structuredClone(this.user);
-//   }
+
+// if (!isLoggedIn) {
+//   this.router.navigate(['/auth/login']);
+//   return false;
+// } else {
+//   const token = this.auth.getRefreshToken() || '';
+//   this.auth.checkRefreshToken(token).subscribe(
+//     (resp) => {
+//       console.log(resp);
+//     },
+//     (err) => {
+//       if(err.status === 401 || err.status === 400 || err.status === 402){
+//         console.log(err);
+//         this.router.navigate(['/auth/login']);
+//         return true;
+//       }else {
+//         return false;
+//       }
+//     }
+//   );
+//   return true;
 // }

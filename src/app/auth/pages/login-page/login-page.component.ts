@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -7,11 +7,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, pipe, tap } from 'rxjs';
 import { User } from '../../interfaces/User.interface';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { Message, MessageService } from 'primeng/api';
 import { ValidationsErrors } from '../../services/validators.service';
+
 
 @Component({
   selector: 'app-login-page',
@@ -19,8 +20,12 @@ import { ValidationsErrors } from '../../services/validators.service';
   styles: ``,
   providers: [MessageService],
 })
-export class LoginPageComponent {
+export class LoginPageComponent implements OnInit {
   user$: Observable<User> | null = null;
+  messages: Message[] = [];
+  showMessage = this.authService.getShowMessage() || false;
+  
+  
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -28,7 +33,13 @@ export class LoginPageComponent {
     private messageService: MessageService,
     private validationsErrors: ValidationsErrors
   ) {}
-
+  ngOnInit(): void {
+    this.messages = [{
+      severity:'error', detail:'Inicie sesión nuevamente'
+    }]
+    console.log(this.showMessage);
+  }
+  
   public myForm: FormGroup = this.fb.group({
     username: ['', [Validators.required]],
     password: ['', [Validators.required]],
@@ -43,28 +54,26 @@ export class LoginPageComponent {
       this.myForm.markAllAsTouched();
       return;
     }
-
+    this.showMessage = false;
     this.authService.iniciarSesion(this.myForm.value).subscribe(
-      (user) => {
-        // Manejar la respuesta del backend aquí
-        this.showMessageLeft(user);
-        // Retrasar la navegación por 2 segundos (2000 milisegundos)
+      response => {
+        this.showMessageLeft(response, 'success');
         setTimeout(() => {
-          this.router.navigateByUrl('/cibernetica');
+          this.router.navigateByUrl('/cibernetica/inicio')
         }, 1000);
       },
-      (error) => {
-        console.error('Error en la solicitud:', error);
-        // Manejar el error aquí
+      error => {
+        console.error('Login error', error);
+        this.showMessageLeft(error.error, 'error');
       }
     );
   }
 
-  showMessageLeft(user: any): void {
+  showMessageLeft(response: any, type: string): void {
     this.messageService.add({
-      severity: 'success',
+      severity: type,
       summary: 'Inicio de sesión',
-      detail: `${user.message}`,
+      detail: `${response.message}`,
     });
   }
 }
